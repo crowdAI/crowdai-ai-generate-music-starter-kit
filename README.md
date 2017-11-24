@@ -2,17 +2,17 @@
 
 # crowdai-ai-generate-music-starter-kit
 
-Starter kit for the [AI Generated Music Challenge]() on [CrowdAI](https://www.crowdai.org/).
+Starter kit for the [AI Generated Music Challenge](https://www.crowdai.org/challenges/ai-generated-music-challenge) on [CrowdAI](https://www.crowdai.org/).
 
 # Installation
 ```
 pip install -U crowdai
 pip install -U mido
 ```
+**NOTE** : This challenge requires the crowdai client with version `>= 1.0.12`.
 
 # Usage
 
-**NOTE** : This challenge requires the crowdai client with version `>= 1.0.12`.
 ```
 import crowdai
 import mido
