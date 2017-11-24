@@ -4,6 +4,9 @@
 
 Starter kit for the [AI Generated Music Challenge](https://www.crowdai.org/challenges/ai-generated-music-challenge) on [CrowdAI](https://www.crowdai.org/).
 
+**Coming Soon**
+A getting started guide to generating music.
+
 # Installation
 ```
 pip install -U crowdai
