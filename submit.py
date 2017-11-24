@@ -11,6 +11,7 @@ args = parser.parse_args()
 midifile = mido.MidiFile(args.midi_file)
 assert midifile.length > 3600 - 10 and midifile.length < 3600 + 10
 assert len(midifile.tracks) == 1
+assert midifile.type == 0
 
 challenge = crowdai.Challenge("AIGeneratedMusicChallenge", args.api_key)
 challenge.submit(args.midi_file)
