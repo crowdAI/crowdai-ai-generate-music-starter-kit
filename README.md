@@ -1,4 +1,8 @@
+![CrowdAI-Logo](https://github.com/crowdAI/crowdai/raw/master/app/assets/images/misc/crowdai-logo-smile.svg?sanitize=true)
+
 # crowdai-ai-generate-music-starter-kit
+
+Starter kit for the [AI Generated Music Challenge]() on [CrowdAI](https://www.crowdai.org/).
 
 # Installation
 ```
@@ -8,6 +12,7 @@ pip install -U mido
 
 # Usage
 
+**NOTE** : This challenge requires the crowdai client with version `>= 1.0.12`.
 ```
 import crowdai
 import mido
@@ -25,6 +30,14 @@ challenge.submit(midi_file_path)
   Common pitfall: `challenge.submit` takes the `midi_file_path`
                     and not the `midifile` object
 """
+```
+
+# Your first submission
+```
+git clone https://github.com/crowdAI/crowdai-ai-generate-music-starter-kit
+cd crowdai-ai-generate-music-starter-kit
+pip install -r requirements.txt
+python submit.py --api_key=<YOUR_CROWDAI_API_KEY> --midi_file=<PATH_TO_YOUR_MIDI_FILE>
 ```
 
 # Author
