@@ -12,7 +12,7 @@ A getting started guide to generating music.
 pip install -U crowdai
 pip install -U mido
 ```
-**NOTE** : This challenge requires the crowdai client with version `>= 1.0.12`.
+**NOTE** : This challenge requires the crowdai client with version `>= 1.0.13`.
 
 # Usage
 
