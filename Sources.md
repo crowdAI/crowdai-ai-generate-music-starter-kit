@@ -11,4 +11,4 @@ Some references to datasets that can potentially be used for training :
 
 This list will be constantly updated. And you are welcome to send a pull request to [https://github.com/crowdAI/crowdai-ai-generate-music-starter-kit](https://github.com/crowdAI/crowdai-ai-generate-music-starter-kit) with any other datasets that you find useful.
 The participants are free to use any publicly available dataset of MIDI files.
-The only constraint is the output of their models should be single track MIDI files, and the evaluation interface will be an Acoustic Grand Piano soundfont to play the same.
+The only constraint is the output of their models should be single track MIDI files, and the evaluation interface will use an Acoustic Grand Piano [SoundFont](https://github.com/mudcube/MIDI.js/blob/master/examples/soundfont/acoustic_grand_piano-mp3.js) to play the same.
