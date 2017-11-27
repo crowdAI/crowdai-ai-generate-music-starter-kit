@@ -8,6 +8,7 @@ Some references to datasets that can potentially be used for training :
 * [MuseData](http://musedata.stanford.edu/)
 * [Classical Piano](http://www.piano-midi.de/)
 * [Bach](http://www.jsbach.net/midi/)
+* [Yamaha Signature MIDI Collection](http://www.yamahaden.com/midi-files)
 
 This list will be constantly updated. And you are welcome to send a pull request to [https://github.com/crowdAI/crowdai-ai-generate-music-starter-kit](https://github.com/crowdAI/crowdai-ai-generate-music-starter-kit) with any other datasets that you find useful.
 The participants are free to use any publicly available dataset of MIDI files.
