@@ -7,6 +7,11 @@ import tqdm
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+import argparse
+parser = argparse.ArgumentParser(description='Start training')
+parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', action='store', required=True)
+parser.add_argument('--hidden_layers', dest='hidden_layers', action='store', required=True)
+args = parser.parse_args()
 
 # np.set_printoptions(threshold=np.nan)
 
@@ -17,12 +22,14 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 #
 # np.save(open("output.npy","wb"), pr)
 
-CHECKPOINT_DIR = "checkpoints/"
+CHECKPOINT_DIR = args.checkpoint_dir
+hidden_layers = [int(x) for x in args.hidden_layers.split(",")]
+dropouts = [0.2 for x in hidden_layers]
 
 data = np.load(open("output.npy", "rb")).T
 data = data/128
 
-train_percent = 0.6
+train_percent = 1
 data_train = data[:int(train_percent*data.shape[0])]
 data_test = data[int(train_percent*data.shape[0]):]
 
@@ -49,14 +56,14 @@ for _i in tqdm.tqdm(xrange(nb_samples_corrected)):
     x_train[_i,:,:] = data[i:i+X_WINDOW_SIZE,]
     y_train[_i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
 
-hidden = [64, 64]
+hidden_layers = [64, 64]
 dropouts = [0.2, 0.2]
 model = Sequential()
 
-for _idx in range(len(hidden)):
+for _idx in range(len(hidden_layers)):
     if _idx == 0:
         model.add(LSTM(
-            hidden[_idx],
+            hidden_layers[_idx],
             input_shape=(X_WINDOW_SIZE, 128),
             return_sequences=True,
             stateful=False,
@@ -65,7 +72,7 @@ for _idx in range(len(hidden)):
         ))
     else:
         model.add(LSTM(
-            hidden[_idx],
+            hidden_layers[_idx],
             return_sequences=True,
             stateful=False,
             go_backwards=True,
