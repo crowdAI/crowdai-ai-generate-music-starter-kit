@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, TimeDistributed
 from keras.layers.recurrent import LSTM
 from keras.callbacks import ModelCheckpoint
+import tqdm
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -33,22 +34,30 @@ Y_WINDOW_SIZE = 1000
 
 nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
+x_train = np.zeros((nb_samples, X_WINDOW_SIZE, 128))
+y_train = np.zeros((nb_samples, Y_WINDOW_SIZE, 128))
+
 print "Loading training data..."
-x_train_list = [np.expand_dims(
-                np.atleast_2d(
-                    data[i:i+X_WINDOW_SIZE,]
-                ), axis=0) for i in xrange(nb_samples)]
+for i in tqdm.tqdm(xrange(nb_samples)):
+    x_train[i,:,:] = data[i:i+X_WINDOW_SIZE,]
+    y_train[i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
 
-y_train_list = [np.expand_dims(
-                np.atleast_2d(
-                    data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
-                ), axis=0) for i in xrange(nb_samples)]
 
-print "Converting training data into numpy nd arrays"
-x_train = np.concatenate(x_train_list, axis=0)
-y_train = np.concatenate(y_train_list, axis=0)
-print x_train.shape
-print y_train.shape
+# x_train_list = [np.expand_dims(
+#                 np.atleast_2d(
+#                     data[i:i+X_WINDOW_SIZE,]
+#                 ), axis=0) for i in xrange(nb_samples)]
+#
+# y_train_list = [np.expand_dims(
+#                 np.atleast_2d(
+#                     data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
+#                 ), axis=0) for i in xrange(nb_samples)]
+#
+# print "Converting training data into numpy nd arrays"
+# x_train = np.concatenate(x_train_list, axis=0)
+# y_train = np.concatenate(y_train_list, axis=0)
+# print x_train.shape
+# print y_train.shape
 
 # trials = len(x_train_list)
 # features = x_train_list[0].shape[1]
@@ -92,7 +101,7 @@ casllbacks_list = [checkpoint]
 print "Starting Training....."
 history = model.fit(
     x_train, y_train,
-    epochs=1000,
+    epochs=200,
     batch_size=200,
     callbacks=casllbacks_list,
     verbose=1)
