@@ -33,8 +33,6 @@ Y_WINDOW_SIZE = 1000
 
 nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
-nb_samples = 2000
-
 print "Loading training data..."
 x_train_list = [np.expand_dims(
                 np.atleast_2d(
