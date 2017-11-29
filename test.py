@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser(description='Start training')
 parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', action='store', required=True)
 parser.add_argument('--hidden_layers', dest='hidden_layers', action='store', required=True)
 parser.add_argument('--window_size', dest='window_size', action='store', required=True)
+parser.add_argument('--epochs', dest='epochs', action='store', required=True)
 args = parser.parse_args()
 
 # np.set_printoptions(threshold=np.nan)
@@ -28,6 +29,7 @@ CHECKPOINT_DIR = args.checkpoint_dir
 hidden_layers = [int(x) for x in args.hidden_layers.split(",")]
 dropouts = [0.2 for x in hidden_layers]
 window_size = int(args.window_size)
+epochs = int(args.epochs)
 
 try:
     os.mkdir(CHECKPOINT_DIR)
@@ -101,7 +103,7 @@ casllbacks_list = [checkpoint]
 print "Starting Training....."
 history = model.fit(
     x_train, y_train,
-    epochs=360,
+    epochs=epochs,
     batch_size=100,
     callbacks=casllbacks_list,
     verbose=1)
