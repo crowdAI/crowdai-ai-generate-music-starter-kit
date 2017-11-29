@@ -3,6 +3,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, TimeDistributed
 from keras.layers.recurrent import LSTM
 from keras.callbacks import ModelCheckpoint
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 # np.set_printoptions(threshold=np.nan)
@@ -33,6 +35,7 @@ nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
 nb_samples = 2000
 
+print "Loading training data..."
 x_train_list = [np.expand_dims(
                 np.atleast_2d(
                     data[i:i+X_WINDOW_SIZE,]
@@ -43,7 +46,7 @@ y_train_list = [np.expand_dims(
                     data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
                 ), axis=0) for i in xrange(nb_samples)]
 
-
+print "Converting training data into numpy nd arrays"
 x_train = np.concatenate(x_train_list, axis=0)
 y_train = np.concatenate(y_train_list, axis=0)
 print x_train.shape
@@ -59,20 +62,20 @@ hidden = [64, 64, 64]
 dropouts = [0.5, 0.5, 0.5]
 model = Sequential()
 model.add(LSTM(
-    64,
+    hidden[0],
     input_shape=(X_WINDOW_SIZE, 128),
     return_sequences=True
 ))
 model.add(Dropout(dropouts[0]))
 
 model.add(LSTM(
-    64,
+    hidden[1],
     return_sequences=True
 ))
 model.add(Dropout(dropouts[1]))
 
 model.add(LSTM(
-    64,
+    hidden[-1],
     return_sequences=True
 ))
 model.add(Dropout(dropouts[-1]))
@@ -81,12 +84,20 @@ model.add(TimeDistributed(Dense(128)))
 model.compile(loss='mean_squared_error', optimizer='adam')
 print(model.summary())
 
+config = model.get_config()
+import pickle
+pickle.dump(config, open("checkpoints/model.config.pickle", "wb"))
+
 checkpoint = ModelCheckpoint("checkpoints/epoch-{epoch:02d}.hdf5")
 casllbacks_list = [checkpoint]
 
-result = model.fit(
+print "Starting Training....."
+history = model.fit(
     x_train, y_train,
-    epochs=150,
-    batch_size=10,
+    epochs=1000,
+    batch_size=200,
     callbacks=casllbacks_list,
     verbose=1)
+
+print "Writing History...."
+pickle.dump(history, open("checkpoints/history.pickle", "wb"))
