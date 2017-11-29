@@ -1,7 +1,8 @@
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout, TimeDistributed
+from keras.layers import Dense, Dropout, TimeDistributed
 from keras.layers.recurrent import LSTM
+from keras.callbacks import ModelCheckpoint
 
 
 # np.set_printoptions(threshold=np.nan)
@@ -80,6 +81,12 @@ model.add(TimeDistributed(Dense(128)))
 model.compile(loss='mean_squared_error', optimizer='adam')
 print(model.summary())
 
-result = model.fit(x_train, y_train, epochs=20, batch_size=10, verbose=1)
-for value in result[0,:,0]:
-	print('%.1f' % value)
+checkpoint = ModelCheckpoint("checkpoints/epoch-{epoch:02d}.hdf5")
+casllbacks_list = [checkpoint]
+
+result = model.fit(
+    x_train, y_train,
+    epochs=150,
+    batch_size=10,
+    callbacks=casllbacks_list,
+    verbose=1)
