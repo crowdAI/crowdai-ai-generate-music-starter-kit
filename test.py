@@ -8,6 +8,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # CUDA_VISIBLE_DEVICES=0 python test.py --checkpoint_dir=checkpoints --hidden_layers=64,64 --window_size=600
+# CUDA_VISIBLE_DEVICES=1 python test.py --checkpoint_dir=checkpoints-64-64-64 --hidden_layers=64,64,64 --window_size=600
 
 import argparse
 parser = argparse.ArgumentParser(description='Start training')
@@ -29,6 +30,11 @@ CHECKPOINT_DIR = args.checkpoint_dir
 hidden_layers = [int(x) for x in args.hidden_layers.split(",")]
 dropouts = [0.2 for x in hidden_layers]
 window_size = int(args.window_size)
+
+try:
+    os.mkdir(CHECKPOINT_DIR)
+except:
+    pass
 
 data = np.load(open("output.npy", "rb")).T
 data = data/128
@@ -60,8 +66,6 @@ for _i in tqdm.tqdm(xrange(nb_samples_corrected)):
     x_train[_i,:,:] = data[i:i+X_WINDOW_SIZE,]
     y_train[_i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
 
-hidden_layers = [64, 64]
-dropouts = [0.2, 0.2]
 model = Sequential()
 
 for _idx in range(len(hidden_layers)):
