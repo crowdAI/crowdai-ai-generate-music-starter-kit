@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, TimeDistributed
 from keras.layers.recurrent import LSTM
 from keras.callbacks import ModelCheckpoint
+import pretty_midi
 import tqdm
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -18,13 +19,10 @@ parser.add_argument('--window_size', dest='window_size', action='store', require
 args = parser.parse_args()
 
 # np.set_printoptions(threshold=np.nan)
-
-# import pretty_midi
-
-# m = pretty_midi.PrettyMIDI("sample_submission.mid")
-# pr = m.get_piano_roll()
-#
-# np.save(open("output.npy","wb"), pr)
+sampling_frequency = 16
+m = pretty_midi.PrettyMIDI("sample_submission.mid")
+pr = m.get_piano_roll(fs=sampling_frequency)
+np.save(open("output.npy","wb"), pr)
 
 CHECKPOINT_DIR = args.checkpoint_dir
 hidden_layers = [int(x) for x in args.hidden_layers.split(",")]
@@ -53,7 +51,7 @@ Y_WINDOW_SIZE = window_size
 
 nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
-stride = 50
+stride = int(sampling_frequency/4)
 nb_samples_corrected = nb_samples/stride + 1
 x_train = np.zeros((nb_samples_corrected, X_WINDOW_SIZE, 128))
 y_train = np.zeros((nb_samples_corrected, Y_WINDOW_SIZE, 128))
