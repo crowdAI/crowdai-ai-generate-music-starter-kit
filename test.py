@@ -31,8 +31,8 @@ MAX_MIDI_NOTE = MIN_MIDI_NOTE + 88
 timesteps = data.shape[0]
 # print data[:,24:24+88].shape
 
-X_WINDOW_SIZE = 1000
-Y_WINDOW_SIZE = 1000
+X_WINDOW_SIZE = 600
+Y_WINDOW_SIZE = 600
 
 nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
