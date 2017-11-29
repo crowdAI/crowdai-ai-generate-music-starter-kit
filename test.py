@@ -42,23 +42,6 @@ for i in tqdm.tqdm(xrange(nb_samples)):
     x_train[i,:,:] = data[i:i+X_WINDOW_SIZE,]
     y_train[i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
 
-
-# x_train_list = [np.expand_dims(
-#                 np.atleast_2d(
-#                     data[i:i+X_WINDOW_SIZE,]
-#                 ), axis=0) for i in xrange(nb_samples)]
-#
-# y_train_list = [np.expand_dims(
-#                 np.atleast_2d(
-#                     data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
-#                 ), axis=0) for i in xrange(nb_samples)]
-#
-# print "Converting training data into numpy nd arrays"
-# x_train = np.concatenate(x_train_list, axis=0)
-# y_train = np.concatenate(y_train_list, axis=0)
-# print x_train.shape
-# print y_train.shape
-
 # trials = len(x_train_list)
 # features = x_train_list[0].shape[1]
 #
@@ -66,27 +49,36 @@ for i in tqdm.tqdm(xrange(nb_samples)):
 #
 #
 hidden = [64, 64, 64]
-dropouts = [0.5, 0.5, 0.5]
+dropouts = [0.2, 0.2, 0.2]
 model = Sequential()
 model.add(LSTM(
     hidden[0],
     input_shape=(X_WINDOW_SIZE, 128),
-    return_sequences=True
+    return_sequences=True,
+    stateful=False,
+    go_backwards=True,
+    activation='tanh'
 ))
 model.add(Dropout(dropouts[0]))
 
 model.add(LSTM(
     hidden[1],
-    return_sequences=True
+    return_sequences=True,
+    stateful=False,
+    go_backwards=True,
+    activation='tanh'
 ))
 model.add(Dropout(dropouts[1]))
 
 model.add(LSTM(
     hidden[-1],
-    return_sequences=True
+    return_sequences=True,
+    stateful=False,
+    go_backwards=True,
+    activation='tanh'
 ))
 model.add(Dropout(dropouts[-1]))
-model.add(TimeDistributed(Dense(128)))
+model.add(TimeDistributed(Dense(128, activation='sigmoid')))
 
 model.compile(loss='mean_squared_error', optimizer='adam')
 print(model.summary())
@@ -101,7 +93,7 @@ casllbacks_list = [checkpoint]
 print "Starting Training....."
 history = model.fit(
     x_train, y_train,
-    epochs=200,
+    epochs=20,
     batch_size=200,
     callbacks=casllbacks_list,
     verbose=1)
