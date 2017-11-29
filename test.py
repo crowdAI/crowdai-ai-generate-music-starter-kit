@@ -49,37 +49,30 @@ for _i in tqdm.tqdm(xrange(nb_samples_corrected)):
     x_train[_i,:,:] = data[i:i+X_WINDOW_SIZE,]
     y_train[_i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
 
-hidden = [64, 64, 64]
-dropouts = [0.2, 0.2, 0.2]
+hidden = [64, 64]
+dropouts = [0.2, 0.2]
 model = Sequential()
-model.add(LSTM(
-    hidden[0],
-    input_shape=(X_WINDOW_SIZE, 128),
-    return_sequences=True,
-    stateful=False,
-    go_backwards=True,
-    activation='tanh'
-))
-model.add(Dropout(dropouts[0]))
 
-model.add(LSTM(
-    hidden[1],
-    input_shape=(X_WINDOW_SIZE, 128),
-    return_sequences=True,
-    stateful=False,
-    go_backwards=True,
-    activation='tanh'
-))
-model.add(Dropout(dropouts[1]))
+for _idx in enumerate(range(len(hidden))):
+    if _idx == 0:
+        model.add(LSTM(
+            hidden[_idx],
+            input_shape=(X_WINDOW_SIZE, 128),
+            return_sequences=True,
+            stateful=False,
+            go_backwards=True,
+            activation='tanh'
+        ))
+    else:
+        model.add(LSTM(
+            hidden[_idx],
+            return_sequences=True,
+            stateful=False,
+            go_backwards=True,
+            activation='tanh'
+        ))
+    model.add(Dropout(dropouts[_idx]))
 
-model.add(LSTM(
-    hidden[-1],
-    return_sequences=True,
-    stateful=False,
-    go_backwards=True,
-    activation='tanh'
-))
-model.add(Dropout(dropouts[-1]))
 model.add(TimeDistributed(Dense(128, activation='sigmoid')))
 
 model.compile(loss='mean_squared_error', optimizer='adam')
