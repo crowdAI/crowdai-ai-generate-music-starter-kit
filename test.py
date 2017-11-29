@@ -109,4 +109,4 @@ history = model.fit(
     verbose=1)
 
 print "Writing History...."
-pickle.dump(history, open("{}/history.pickle".format(CHECKPOINT_DIR), "wb"))
+pickle.dump(history.history, open("{}/history.pickle".format(CHECKPOINT_DIR), "wb"))
