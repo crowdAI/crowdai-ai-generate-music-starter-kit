@@ -103,7 +103,7 @@ casllbacks_list = [checkpoint]
 print "Starting Training....."
 history = model.fit(
     x_train, y_train,
-    epochs=200,
+    epochs=360,
     batch_size=100,
     callbacks=casllbacks_list,
     verbose=1)
