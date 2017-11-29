@@ -17,6 +17,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 #
 # np.save(open("output.npy","wb"), pr)
 
+CHECKPOINT_DIR = "checkpoints/"
+
 data = np.load(open("output.npy", "rb")).T
 data = data/128
 
@@ -34,20 +36,19 @@ Y_WINDOW_SIZE = 1000
 
 nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
-x_train = np.zeros((nb_samples, X_WINDOW_SIZE, 128))
-y_train = np.zeros((nb_samples, Y_WINDOW_SIZE, 128))
+stride = 50
+nb_samples_corrected = nb_samples/stride + 1
+x_train = np.zeros((nb_samples_corrected, X_WINDOW_SIZE, 128))
+y_train = np.zeros((nb_samples_corrected, Y_WINDOW_SIZE, 128))
 
+print x_train.shape
+print nb_samples, stride, nb_samples_corrected
 print "Loading training data..."
-for i in tqdm.tqdm(xrange(nb_samples)):
-    x_train[i,:,:] = data[i:i+X_WINDOW_SIZE,]
-    y_train[i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
+for _i in tqdm.tqdm(xrange(nb_samples_corrected)):
+    i = _i * stride
+    x_train[_i,:,:] = data[i:i+X_WINDOW_SIZE,]
+    y_train[_i,:,:] = data[i+X_WINDOW_SIZE:i+X_WINDOW_SIZE+Y_WINDOW_SIZE,]
 
-# trials = len(x_train_list)
-# features = x_train_list[0].shape[1]
-#
-# print input_mat.shape
-#
-#
 hidden = [64, 64, 64]
 dropouts = [0.2, 0.2, 0.2]
 model = Sequential()
@@ -63,6 +64,7 @@ model.add(Dropout(dropouts[0]))
 
 model.add(LSTM(
     hidden[1],
+    input_shape=(X_WINDOW_SIZE, 128),
     return_sequences=True,
     stateful=False,
     go_backwards=True,
@@ -85,18 +87,18 @@ print(model.summary())
 
 config = model.get_config()
 import pickle
-pickle.dump(config, open("checkpoints/model.config.pickle", "wb"))
+pickle.dump(config, open("{}/model.config.pickle".format(CHECKPOINT_DIR), "wb"))
 
-checkpoint = ModelCheckpoint("checkpoints/epoch-{epoch:02d}.hdf5")
+checkpoint = ModelCheckpoint(CHECKPOINT_DIR + "/epoch-{epoch:02d}.hdf5")
 casllbacks_list = [checkpoint]
 
 print "Starting Training....."
 history = model.fit(
     x_train, y_train,
-    epochs=20,
-    batch_size=200,
+    epochs=200,
+    batch_size=100,
     callbacks=casllbacks_list,
     verbose=1)
 
 print "Writing History...."
-pickle.dump(history, open("checkpoints/history.pickle", "wb"))
+pickle.dump(history, open("{}/history.pickle".format(CHECKPOINT_DIR), "wb"))
