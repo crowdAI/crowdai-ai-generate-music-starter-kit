@@ -7,10 +7,13 @@ import tqdm
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+# CUDA_VISIBLE_DEVICES=0 python test.py --checkpoint_dir=checkpoints --hidden_layers=64,64 --window_size=600
+
 import argparse
 parser = argparse.ArgumentParser(description='Start training')
 parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', action='store', required=True)
 parser.add_argument('--hidden_layers', dest='hidden_layers', action='store', required=True)
+parser.add_argument('--window_size', dest='window_size', action='store', required=True)
 args = parser.parse_args()
 
 # np.set_printoptions(threshold=np.nan)
@@ -25,6 +28,7 @@ args = parser.parse_args()
 CHECKPOINT_DIR = args.checkpoint_dir
 hidden_layers = [int(x) for x in args.hidden_layers.split(",")]
 dropouts = [0.2 for x in hidden_layers]
+window_size = int(args.window_size)
 
 data = np.load(open("output.npy", "rb")).T
 data = data/128
@@ -38,8 +42,8 @@ MAX_MIDI_NOTE = MIN_MIDI_NOTE + 88
 timesteps = data.shape[0]
 # print data[:,24:24+88].shape
 
-X_WINDOW_SIZE = 600
-Y_WINDOW_SIZE = 600
+X_WINDOW_SIZE = window_size # 600
+Y_WINDOW_SIZE = window_size
 
 nb_samples = data_train.shape[0] - X_WINDOW_SIZE - Y_WINDOW_SIZE
 
