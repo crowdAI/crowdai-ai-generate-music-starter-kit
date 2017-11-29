@@ -53,7 +53,7 @@ hidden = [64, 64]
 dropouts = [0.2, 0.2]
 model = Sequential()
 
-for _idx in enumerate(range(len(hidden))):
+for _idx in range(len(hidden)):
     if _idx == 0:
         model.add(LSTM(
             hidden[_idx],
